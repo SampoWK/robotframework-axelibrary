@@ -1,13 +1,20 @@
 *** Settings ***
-Library    SeleniumLibrary
-Library    AxeLibrary
+Library             SeleniumLibrary
+Library             AxeLibrary
+
+Suite Teardown      Close Browser
+
+
+*** Variables ***
+&{axe_config}=      reporter=v2
+
 
 *** Test Cases ***
-Google Accessibility Test
-    Open Browser    https://www.google.com/    Chrome
-    &{results}=    Run Accessibility Tests    google.json
-    Log   Violations Count: ${results.violations}
-    Get Json Accessibility Result
-    Log Readable Accessibility Result    violations
-    Log Readable Accessibility Result    incomplete
-    [Teardown]    Close All Browsers
+Run One Accessibility Test
+    Open Browser    https://www.gofore.com    firefox
+    &{results}=    Run Accessibility Tests
+    ...    results/axe-results.json
+    ...    axe_js_path=..${/}node_modules${/}axe-core${/}axe.js
+    ...    options=${axe_config}
+    Log To Console    ${results}
+    Accessibility Issues Log
